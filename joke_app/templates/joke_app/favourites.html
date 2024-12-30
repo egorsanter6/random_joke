@@ -1,1 +1,6 @@
-<p>favourites</p>
+<ol>
+  {% for joke in favourite_jokes %}
+    <li><p>{{ joke }}</p></li>
+  {% endfor %}
+</ol>
+<a href="{% url 'joke_app:index' %}">Continue to jokes</a>
