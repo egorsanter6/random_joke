@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 from .models import FavouriteJoke
 
 import requests
@@ -19,8 +20,10 @@ def index(request):
     context = {'joke': joke}
     return render(request, 'joke_app/index.html', context)
 
+
+@login_required
 def favourites(request):
-    favourite_jokes = FavouriteJoke.objects.values_list('joke', flat=True)
-    
+    favourite_jokes = FavouriteJoke.objects.filter(owner=request.user).values_list('joke', flat=True)   
+     
     context = {'favourite_jokes': favourite_jokes}
     return render(request, 'joke_app/favourites.html', context)
