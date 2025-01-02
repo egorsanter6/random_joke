@@ -3,7 +3,7 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.forms import UserCreationForm
 
 def logout_view(request):
-    if request.method == 'GET':
+    if request.method == 'POST':
         logout(request)
         return render(request, 'users/logged_out.html')
 
