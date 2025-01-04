@@ -3,18 +3,15 @@ from django.urls import reverse, resolve
 from joke_app import views
 
 @pytest.mark.django_db
-def test_index_url():
-    url = reverse('joke_app:index')
-    assert url == '/'
+@pytest.mark.parametrize(
+        'url, path_to_app, view', [
+            ('joke_app:index', '/', views.index),
+            ('joke_app:favourites', '/favourites', views.favourites),
+            ]
+        )
+def test_joke_app_urls(url, path_to_app, view):
+    reversed_url = reverse(url)
+    assert reversed_url == path_to_app
 
-    resolved = resolve(url).func
-    assert resolved == views.index
-
-
-@pytest.mark.django_db
-def test_favourites_url():
-    url = reverse('joke_app:favourites')
-    assert url == '/favourites'
-
-    resolved = resolve(url).func
-    assert resolved == views.favourites
+    resolved = resolve(reversed_url).func
+    assert resolved == view

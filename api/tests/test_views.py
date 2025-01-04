@@ -3,7 +3,6 @@ from rest_framework.test import APIClient
 from django.urls import reverse
 from joke_app.models import FavouriteJoke
 from django.contrib.auth.models import User
-from django.db.models import Count
 
 @pytest.mark.django_db
 def test_get_valid_data():
