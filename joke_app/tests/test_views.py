@@ -2,7 +2,7 @@ import pytest
 from django.urls import reverse
 from unittest.mock import patch
 from django.contrib.auth.models import User
-from .models import FavouriteJoke
+from joke_app.models import FavouriteJoke
 from django.utils.html import escape
 
 @pytest.mark.django_db

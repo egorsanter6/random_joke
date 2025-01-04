@@ -33,10 +33,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    # My apps
-    'joke_app',
-    'users',
-
     # Django apps
     'django.contrib.admin',
     'django.contrib.auth',
@@ -44,6 +40,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Downloaded apps
+    'rest_framework',
+
+    # My apps
+    'joke_app',
+    'users',
+    
 ]
 
 MIDDLEWARE = [
@@ -136,5 +140,13 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# My settings
 LOGIN_REDIRECT_URL = 'joke_app:index'
+
 LOGIN_URL = '/users/login'
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',  # Only JSON
+    ),
+}
