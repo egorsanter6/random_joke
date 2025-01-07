@@ -1,17 +1,20 @@
 {% if user.is_authenticated %}
   {{ joke }}
-  <form method="post" action="{% url 'joke_app:index' %}">
-    {% csrf_token %}
-    <input type="hidden" name="joke" value="{{ joke }}">
-    <button type="submit">Add joke to favourites</button>
-  </form>
-  <a href="{% url 'joke_app:favourites' %}">Favourites</a>
-  <a href="{% url 'joke_app:index' %}">Another joke</a>
-  <form method="post" action="{% url 'users:logout' %}">
-    {% csrf_token %}
-    <button type="submit">Logout</button>
-  </form>
+  {% if joke != "Could not fetch joke. Please try again later."%}
+    <form method="post" action="{% url 'joke_app:index' %}">
+      {% csrf_token %}
+      <input type="hidden" name="joke" value="{{ joke }}">
+      <button type="submit">Add joke to favourites</button>
+    </form>
+  {% endif %}
+    <a href="{% url 'joke_app:favourites' %}">Favourites</a>
+    <a href="{% url 'joke_app:index' %}">Another joke</a>
+    <form method="post" action="{% url 'users:logout' %}">
+      {% csrf_token %}
+      <button type="submit">Logout</button>
+    </form>
   <a href="{% url 'api:get_data' %}">API (JSON Format)</a>
+  <a href="{% url 'joke_app:jokes_rating' %}">Jokes rating</a>
 {% else %}
   <a href="{% url 'users:login' %}">log in</a>
   <a href="{% url 'users:register' %}">register</a>

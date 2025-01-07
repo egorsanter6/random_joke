@@ -7,6 +7,7 @@ from joke_app import views
         'url, path_to_app, view', [
             ('joke_app:index', '/', views.index),
             ('joke_app:favourites', '/favourites', views.favourites),
+            ('joke_app:jokes_rating', '/rating', views.jokes_rating),
             ]
         )
 def test_joke_app_urls(url, path_to_app, view):

@@ -150,3 +150,10 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.JSONRenderer',  # Only JSON
     ),
 }
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+    }
+}

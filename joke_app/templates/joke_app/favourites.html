@@ -1,12 +1,14 @@
 <ol>
   {% if favourite_jokes %}
     {% for joke in favourite_jokes %}
-      <li>{{ joke }}</li>
-      <form method="post" action="{% url 'joke_app:favourites' %}">
-        {% csrf_token %}
-        <input type="hidden" name="joke" value="{{ joke }}">
-        <button type="Submit">Delete</button>
-      </form>
+      <li>
+        {{ joke }}
+        <form id="myForm-{{ forloop.counter }}" method="post" action="{% url 'joke_app:favourites' %}">
+          {% csrf_token %}
+          <input type="hidden" name="joke" value="{{ joke }}">
+          <button type="submit">Delete</button>
+        </form>
+      </li>
     {% endfor %}
   {% else %}
     <p>You haven't added any jokes :/</p>

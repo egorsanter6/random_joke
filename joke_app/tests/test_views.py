@@ -17,11 +17,11 @@ class TestJokeAppViews:
         user = User.objects.create_user(
             username='myuser',
             password='Str0ngP@ssw0rd123!',
-            )
+        )
         client.login(
             username='myuser', 
             password='Str0ngP@ssw0rd123!',
-            )
+        )
         return user
 
     def test_index_get(self, client, authenticated_user):
@@ -46,7 +46,7 @@ class TestJokeAppViews:
         FavouriteJoke.objects.create(
             joke=test_joke,
             owner=authenticated_user,
-            )
+        )
 
         response = client.post(reverse('joke_app:index'), {'joke': test_joke})
 
@@ -55,7 +55,7 @@ class TestJokeAppViews:
         assert FavouriteJoke.objects.filter(
             joke=test_joke,
             owner=authenticated_user
-            ).count() == 1
+        ).count() == 1
 
     def test_index_api_failure(self, client, authenticated_user):
         with patch('requests.get') as mock_get:
@@ -67,21 +67,21 @@ class TestJokeAppViews:
             assert response.status_code == 200
             assert escape(
                 "Could not fetch joke. Please try again later."
-                ) in response.content.decode('utf-8')
+            ) in response.content.decode('utf-8')
 
     def test_favourites_requires_login(self, client):
         response = client.get(reverse('joke_app:favourites'))
 
         assert response.status_code == 302
         expected_redirect_url = "/users/login?next="\
-                            f"{reverse('joke_app:favourites')}"
+                               f"{reverse('joke_app:favourites')}"
         assert response.url == expected_redirect_url
 
     def test_favourites_get(self, client, authenticated_user, test_joke):
         FavouriteJoke.objects.create(
             joke=test_joke,
             owner=authenticated_user,
-            )
+        )
 
         response = client.get(reverse('joke_app:favourites'))
         content = response.content.decode('utf-8')
@@ -94,14 +94,14 @@ class TestJokeAppViews:
         FavouriteJoke.objects.create(
             joke=test_joke,
             owner=authenticated_user,
-            )
+        )
 
         response = client.post(
             reverse('joke_app:favourites'),
             {'joke': test_joke}
-            )
+        )
         content = response.content.decode('utf-8')
 
-        assert response.status_code == 200
+        assert response.status_code == 302
         assert escape(test_joke) not in content
         assert FavouriteJoke.objects.count() == 0
