@@ -2,14 +2,9 @@ import requests
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
-from .models import FavouriteJoke
 from django.db import DatabaseError
 from django.core.cache import cache
-
-CACHE_RATING_KEY = "rating_cache_key"
-CACHE_RATING_TIMESTAMP_KEY = "rating_cache_timestamp_key"
-CACHE_FAVOURITES_KEY = 'favourites_cache_key'
-CACHE_FAVOURITES_TIMESTAMP_KEY = 'favourites_cache_timestamp_key'
+from .models import FavouriteJoke
 
 def index(request):
     try:
@@ -43,20 +38,19 @@ def index(request):
 
 @login_required
 def favourites(request):
+    user_id = request.user.id
+    CACHE_FAVOURITES_KEY = f"favourites_cache_key_{user_id}"
+    CACHE_FAVOURITES_TIMESTAMP_KEY = f"favourites_cache_timestamp_key_{user_id}"
+
     favourite_jokes = FavouriteJoke.objects.filter(
         owner=request.user
     ).values_list('joke', flat=True)
 
-    user_id = request.user.id
-
-    cache_key = CACHE_FAVOURITES_KEY.format(user_id=user_id)
-    cache_timestamp_key = CACHE_FAVOURITES_TIMESTAMP_KEY.format(user_id=user_id)
-
-    cache_state = hash(favourite_jokes[:])
-    cache_timestamp = cache.get(cache_timestamp_key)
+    cache_state = hash(tuple(favourite_jokes[:]))
+    cache_timestamp = cache.get(CACHE_FAVOURITES_TIMESTAMP_KEY)
 
     if cache_state == cache_timestamp:
-        cached_response = cache.get(cache_key)
+        cached_response = cache.get(CACHE_FAVOURITES_KEY)
         if cached_response:
             return cached_response
 
@@ -68,29 +62,23 @@ def favourites(request):
         if joke_to_delete.exists():
             joke_to_delete.delete()
 
-        cache.delete(cache_key)
-        cache.delete(cache_timestamp_key)
+        cache.delete(CACHE_FAVOURITES_KEY)
+        cache.delete(CACHE_FAVOURITES_TIMESTAMP_KEY)
 
         return redirect('joke_app:favourites')
 
     context = {'favourite_jokes': favourite_jokes}
     response = render(request, 'joke_app/favourites.html', context)
 
-    cache.set(cache_key, response, 60 * 15)
-    cache.set(cache_timestamp_key, cache_state, 60 * 15)
+    cache.set(CACHE_FAVOURITES_KEY, response, 60 * 15)
+    cache.set(CACHE_FAVOURITES_TIMESTAMP_KEY, cache_state, 60 * 15)
 
     return response
 
 
 def jokes_rating(request):
-    if request.user.is_authenticated:
-        user_id = request.user.id
-        cache_key = CACHE_RATING_KEY.format(user_id=user_id)
-        cache_timestamp_key = CACHE_RATING_TIMESTAMP_KEY.format(user_id=user_id)
-    else:
-        user_id = None
-        cache_key = CACHE_RATING_KEY
-        cache_timestamp_key = CACHE_RATING_TIMESTAMP_KEY
+    CACHE_RATING_KEY = 'rating_cache_key'
+    CACHE_RATING_TIMESTAMP_KEY = 'rating_cache_timestamp_key'
 
     try:
         popular_jokes = FavouriteJoke.objects.values('joke').annotate(
@@ -100,13 +88,13 @@ def jokes_rating(request):
         popular_jokes = []
 
     current_state = [
-        hash((joke['joke'], joke['total_users']) for joke in popular_jokes)
+        hash(tuple((joke['joke'], joke['total_users']) for joke in popular_jokes))
     ]
 
-    cache_timestamp = cache.get(cache_timestamp_key)
+    cache_timestamp = cache.get(CACHE_RATING_TIMESTAMP_KEY)
 
     if cache_timestamp == current_state:
-        cached_response = cache.get(cache_key)
+        cached_response = cache.get(CACHE_RATING_KEY)
         if cached_response:
             return cached_response
 
@@ -125,7 +113,8 @@ def jokes_rating(request):
     }
     response = render(request, 'joke_app/rating.html', context)
 
-    cache.set(cache_key, response, 60 * 15)
-    cache.set(cache_timestamp_key, current_state, 60 * 15)
+    cache.set(CACHE_RATING_KEY, response, 60 * 15)
+    cache.set(CACHE_RATING_TIMESTAMP_KEY, current_state, 60 * 15)
 
     return response
+    
