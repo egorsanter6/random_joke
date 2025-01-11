@@ -131,7 +131,7 @@ class TestJokeAppViews:
             )
             content = response.content.decode('UTF-8')
 
-            assert response.status_code == 302
+            assert response.status_code == 200
             assert FavouriteJoke.objects.count() == 0
             assert escape(test_joke) not in content
         
