@@ -1,2 +1,7 @@
-<p>You have been successfully logged out!</p>
-<a href="{% url 'joke_app:index' %}">Go to the main page</a>
+{% extends 'joke_app/base.html' %}
+{% block content %}
+<div class="text-align-center">
+    <p>You have been successfully logged out!</p>
+    <a class="btn btn-light btn-sm" href="{% url 'joke_app:index' %}">Go to the main page</a>
+  </div>
+{% endblock content %}

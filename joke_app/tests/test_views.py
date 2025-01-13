@@ -207,7 +207,8 @@ class TestJokeAppViews:
         )
         def test_cache_keys_behaviour(self, client, key, user, clear_cache):
             if user == 'authenticated':
-                TestJokeAppViews.authenticated_user(client, login=False)
+                myuser = TestJokeAppViews.authenticated_user(client)
+                key = f"{key}_{myuser.id}"
 
             response = client.get(reverse('joke_app:jokes_rating'))
             assert cache.get(key) is not None

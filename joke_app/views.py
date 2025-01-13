@@ -105,6 +105,11 @@ def jokes_rating(request):
     CACHE_RATING_KEY = 'rating_cache_key'
     CACHE_RATING_TIMESTAMP_KEY = 'rating_cache_timestamp_key'
 
+    if request.user.is_authenticated:
+        user_id = request.user.id
+        CACHE_RATING_KEY += f"_{user_id}"
+        CACHE_RATING_TIMESTAMP_KEY += f"_{user_id}"
+
     try:
         popular_jokes = FavouriteJoke.objects.values('joke').annotate(
             total_users=Count('owner')

@@ -1,37 +1,39 @@
-<ol>
-    {% for joke in popular_jokes %}
-      <li>{{ joke.joke }} Total users: {{ joke.total_users }}</li>
-      {% if user.is_authenticated %}
-        {% if joke.joke not in favourite_jokes %}
-          <form class="favouriteForm" method="post" action="{% url 'joke_app:index' %}">
-            {% csrf_token %}
-            <input type="hidden" name="joke" value="{{ joke.joke }}">
-            <button type="submit">Add joke to favourites</button>
-          </form>
-        {% else %}
-          <form class="favouriteForm" method="post" action="{% url 'joke_app:favourites' %}">
-            {% csrf_token %}
-            <input type="hidden" name="joke" value="{{ joke.joke }}">
-            <button type="submit">Delete joke from favourites</button>
-          </form>
+{% extends 'joke_app/base.html' %}
+{% block content %}
+  <ol>
+      {% for joke in popular_jokes %}
+        <li class="margin-10px">{{ joke.joke }} Total users: {{ joke.total_users }}</li>
+        {% if user.is_authenticated %}
+          {% if joke.joke not in favourite_jokes %}
+            <form class="favouriteForm" method="post" action="{% url 'joke_app:index' %}">
+              {% csrf_token %}
+              <input type="hidden" name="joke" value="{{ joke.joke }}">
+              <button type="submit" class="btn btn-light btn-sm">Add joke to favourites</button>
+            </form>
+          {% else %}
+            <form class="favouriteForm" method="post" action="{% url 'joke_app:favourites' %}">
+              {% csrf_token %}
+              <input type="hidden" name="joke" value="{{ joke.joke }}">
+              <button type="submit" class="btn btn-light btn-sm">Delete joke from favourites</button>
+            </form>
+          {% endif %}
         {% endif %}
-      {% endif %}
-    {% empty %}
-      <p>There are no popular jokes yet.</p>
-    {% endfor %}
+      {% empty %}
+        <p>There are no popular jokes yet.</p>
+      {% endfor %}
   </ol>
-  
-  <a href="{% url 'joke_app:index' %}">Continue to jokes</a>
-  
+    
+  <a class="btn btn-light btn-sm" href="{% url 'joke_app:index' %}">Continue to jokes</a>
+
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
     $(document).on('submit', '.favouriteForm', function(event) {
       event.preventDefault()
-  
+
       const form = $(this)
       const url = form.attr('action')
       const data = form.serialize()
-  
+
       $.post(url, data, function() {
         window.location.reload()
       }).fail(function() {
@@ -39,4 +41,4 @@
       })
     })
   </script>
-  
+{% endblock content %}

@@ -1,7 +1,19 @@
-<form method="post" action="{% url 'users:register' %}">
+{% extends 'joke_app/base.html' %}
+{% block content %}
+  <form class="text-align-left" method="post" action="{% url 'users:register' %}">
     {% csrf_token %}
-    {{ form.as_p }}
+    {{ form.non_field_errors }}
+    <div>
+        {{ form.username.label_tag }} {{ form.username }}
+    </div>
+    <div>
+        {{ form.password1.label_tag }} {{ form.password1 }}
+    </div>
+    <div>
+        {{ form.password2.label_tag }} {{ form.password2 }}
+    </div>
 
-    <button name="submit">register</button>
+    <button name="submit" class="btn btn-light btn-sm">register</button>
     <input type="hidden" name="next" value="{% url 'joke_app:index' %}">
-</form>
+  </form>
+{% endblock content %}
