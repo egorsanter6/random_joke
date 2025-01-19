@@ -93,12 +93,11 @@ class TestJokeAppViews:
 
 
     class TestFavourites:
-        def test_login_requied(self, client, clear_cache):
+        def test_login_required(self, client, clear_cache):
             response = client.get(reverse('joke_app:favourites'))
 
             assert response.status_code == 302
-            expected_redirect_url = "/users/login?next="\
-                                   f"{reverse('joke_app:favourites')}"
+            expected_redirect_url = "/?next=/favourites"
             assert response.url == expected_redirect_url
 
         def test_get(self, client, test_joke, clear_cache):

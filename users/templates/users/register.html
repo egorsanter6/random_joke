@@ -3,14 +3,38 @@
   <form class="text-align-left" method="post" action="{% url 'users:register' %}">
     {% csrf_token %}
     {{ form.non_field_errors }}
+    
     <div>
         {{ form.username.label_tag }} {{ form.username }}
+        {% if form.username.errors %}
+          <ul class="error-list">
+            {% for error in form.username.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
     </div>
+    
     <div>
         {{ form.password1.label_tag }} {{ form.password1 }}
+        {% if form.password1.errors %}
+          <ul class="error-list">
+            {% for error in form.password1.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
     </div>
+    
     <div>
         {{ form.password2.label_tag }} {{ form.password2 }}
+        {% if form.password2.errors %}
+          <ul class="error-list">
+            {% for error in form.password2.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
     </div>
 
     <button name="submit" class="btn btn-light btn-sm">register</button>
