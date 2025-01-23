@@ -25,12 +25,21 @@ env = environ.Env()
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # SECURITY WARNING: keep the secret key used in production secret!
+<<<<<<< HEAD
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['127.0.0.1'])
+=======
+SECRET_KEY = env('SECRET_KEY'),
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = False
+
+ALLOWED_HOSTS = ['127.0.0.1']
+>>>>>>> c3ae2ec37fdb4720a55868d62450a8d0a9f810c4
 
 
 # Application definition
